@@ -1,4 +1,5 @@
-from flask import Flask, request
+#from typing import final
+from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -25,5 +26,17 @@ def insert():
     mysql.connection.commit()
     cursor.close()
     return 'Objeto insertado correctamente...!!!'
+
+@app.route('/getAll', methods=['GET'])
+def personas():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute(''' SELECT * FROM persona ''')
+        rows = cursor.fetchall()
+        return jsonify(rows)
+    except Exception as e:
+        print('Error: '+ e)
+    finally:
+        cursor.close()
 
 app.run(host='0.0.0.0', debug=True)
